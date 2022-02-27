@@ -1,28 +1,29 @@
-web:
- image: nginx:latest
- container_name: nginx
- restart: always
- ports:
-  - "80:80"
- volumes: 
+services:
+ web:
+  image: nginx:latest
+  container_name: nginx
+  restart: always
+  ports:
+   - "80:80"
+  volumes:
+   - ./www:/www
+   - ./site.conf:/etc/nginx/conf.d/site.conf
+  links:
+  - php
+ php:
+  image: php:7.3-fpm
+  container_name: php-fpm
+  volumes:
   - ./www:/www
-  - ./site.conf:/etc/nginx/conf.d/site.conf
- links:
- - php
-php:
- image: php:7.3-fpm
- container_name: php-fpm
- volumes:
- - ./www:/www
- links:
- - db
-db:
- image: mysql:5.7
- container_name: mysql
- ports:
- - "3306:3306"
- command: --default-authentication-plugin=mysql_native_password
- restart: always
- environment:
-   MYSQL_ROOT_PASSWORD: root
-   MYSQL_DATABASE: teste
+  links:
+  - db
+ db:
+  image: mysql:5.7
+  container_name: mysql
+  ports:
+  - "3306:3306"
+  command: --default-authentication-plugin=mysql_native_password
+  restart: always
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_DATABASE: teste
